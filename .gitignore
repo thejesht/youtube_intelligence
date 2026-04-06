@@ -1,0 +1,28 @@
+# Secrets & auth
+.env
+cookies.txt
+
+# Local databases
+*.db
+*.sqlite
+
+# Vector DB (large binary files, rebuild locally)
+data/chroma/
+
+# Transcripts (fetched at runtime)
+data/transcripts/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Claude
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

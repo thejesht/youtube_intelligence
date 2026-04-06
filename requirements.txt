@@ -1,0 +1,27 @@
+# YouTube API
+google-api-python-client>=2.100.0
+google-auth>=2.23.0
+
+# Transcript fetching (fallback if MCP unavailable)
+youtube-transcript-api>=0.6.1
+
+# Database
+chromadb>=0.4.22
+sqlalchemy>=2.0.23
+
+# Embeddings
+sentence-transformers>=2.2.2
+torch>=2.1.0
+
+# Configuration
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+
+# HTTP requests
+requests>=2.31.0
+
+# Telegram
+python-telegram-bot>=20.7
+
+# Utilities
+rich>=13.7.0  # For nice CLI output
