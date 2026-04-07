@@ -1,0 +1,31 @@
+name: YouTube Learning Pipeline
+
+on:
+  schedule:
+    # Run daily at 3:00 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r pipeline/requirements.txt
+
+      - name: Run RSS check + Transcript fetch
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          cd ${{ github.workspace }}
+          python -m pipeline.run --stage rss
+          python -m pipeline.run --stage transcripts

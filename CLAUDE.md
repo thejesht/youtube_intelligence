@@ -1,33 +1,41 @@
 # youtube_intelligence
 
-A unified YouTube intelligence toolkit — monitors channels, fetches transcripts, generates embeddings, and extracts structured insights using LLMs.
+Automated YouTube learning pipeline with a compounding LLM wiki (inspired by Karpathy's LLM Wiki pattern).
 
-## What this project does
-- Monitors YouTube channels for new videos
-- Fetches and stores transcripts
-- Generates embeddings (Chroma vector DB) for semantic search
-- Scores videos by relevance to configured user interests
-- Extracts LLM-generated insights from transcripts for any domain
+## How it works
+
+**Automated (GitHub Actions daily):**
+1. **RSS check** — discovers new long-form videos, skips Shorts (no API key)
+2. **Transcript fetch** — pulls transcripts via `youtube-transcript-api` (no API key)
+3. Stores everything in Supabase (`yt_channels`, `yt_videos`, `yt_transcripts`)
+
+**Manual (Claude Code session):**
+4. **Wiki update** — reads raw transcripts, extracts concepts/people/knowledge via Ollama, builds interlinked markdown wiki
 
 ## Structure
-- `src/` — core modules: channel_monitor, transcript_fetcher, embedding_generator, relevance_scorer, database
-- `scripts/` — runnable entry points: setup, fetch_channel, process_transcripts, test_search
-- `transcript_extraction/` — LLM insight generation from transcripts; currently contains one worked example (AEO strategies for UK OTAs), evolving into a reusable pipeline
-- `data/` — local DBs and embeddings (not committed to git)
-- `config/` — user interest profiles
+- `pipeline/` — automated ingestion
+  - `run.py` — orchestrator (2 stages: rss, transcripts)
+  - `rss_checker.py` — YouTube RSS feed parsing, filters out Shorts
+  - `transcript.py` — transcript fetching
+  - `storage.py` — Supabase operations (singleton client)
+  - `config.py` — configuration
+  - `wiki_update.py` — transcript → wiki knowledge extraction
+- `wiki/` — LLM-maintained knowledge base (Karpathy pattern)
+  - `index.md` — catalog of all pages
+  - `log.md` — chronological ingest log
+  - `concepts/` — concept pages, cross-referenced across videos
+  - `people/` — entity pages for recurring experts/guests
+  - `sources/` — per-video knowledge pages
+  - `themes/` — cross-cutting synthesis
 
 ## Running
 ```bash
-python scripts/setup.py                  # first-time setup
-python scripts/fetch_channel.py          # fetch new videos
-python scripts/process_transcripts.py   # generate embeddings
-python scripts/test_search.py           # test relevance search
+# Automated pipeline (GitHub Actions runs this daily)
+python -m pipeline.run
+
+# Wiki update (run locally in Claude Code session)
+python -m pipeline.wiki_update
 ```
 
-## Key files
-- `requirements.txt` — dependencies
-- `.env` — YouTube API key and user config (never commit)
-- `IMPLEMENTATION_PLAN.md` — roadmap for upcoming features
-
-## Roadmap
-Connect `transcript_extraction` insight pipeline with the recommendation engine for full end-to-end: discover → fetch → embed → score → extract insights.
+## Adding channels
+Insert into Supabase `yt_channels` table with channel_id, handle, name, and rss_url.
