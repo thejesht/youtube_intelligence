@@ -21,11 +21,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r pipeline/requirements.txt
 
-      - name: Run RSS check + Transcript fetch
+      - name: Run RSS check (discover new videos)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           cd ${{ github.workspace }}
           python -m pipeline.run --stage rss
-          python -m pipeline.run --stage transcripts

@@ -52,13 +52,12 @@ def stage_transcripts():
         print(f"  Fetching: {video['title'][:60]}...")
 
         result = fetch_transcript(vid_id, delay=TRANSCRIPT_DELAY_SECONDS)
-        if result:
+        if result and result.word_count > 0:
             storage.save_transcript(vid_id, result.text, result.language, result.word_count)
             print(f"    OK ({result.word_count} words)")
             fetched += 1
         else:
-            storage.save_transcript(vid_id, "", "en", 0)
-            print(f"    SKIPPED (no transcript available)")
+            print(f"    SKIPPED (no transcript available, will retry next run)")
 
     print(f"[TRANSCRIPTS] Done. {fetched}/{len(batch)} fetched.\n")
     return fetched
